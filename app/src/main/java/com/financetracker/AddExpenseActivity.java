@@ -2,6 +2,7 @@ package com.financetracker;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,6 +19,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private EditText businessInput;
     private EditText amountInput;
     private EditText notesInput;
+    private AppDatabase db;
 
     private final ArrayList<String> categories = new ArrayList<>();
     private String selectedCategory = "";
@@ -32,6 +34,11 @@ public class AddExpenseActivity extends AppCompatActivity {
         businessInput = findViewById(R.id.businessInput);
         amountInput = findViewById(R.id.amountInput);
         notesInput = findViewById(R.id.notesInput);
+
+        db = Room.databaseBuilder(getApplicationContext(),
+                        AppDatabase.class, "finance-tracker-db")
+                .allowMainThreadQueries()
+                .build();
 
         amountInput.setFilters(new InputFilter[]{
                 new DecimalDigitsInputFilter(2)
@@ -66,9 +73,18 @@ public class AddExpenseActivity extends AppCompatActivity {
                 return;
             }
 
-            Toast.makeText(this,
-                    "Saved: " + selectedCategory + " - " + business + " - $" + amount,
-                    Toast.LENGTH_LONG).show();
+            double expenseAmount = Double.parseDouble(amount);
+
+            Expense expense = new Expense(selectedCategory, business, expenseAmount, notes);
+            db.expenseDao().insert(expense);
+
+            Toast.makeText(this, "Expense saved successfully", Toast.LENGTH_SHORT).show();
+
+            businessInput.setText("");
+            amountInput.setText("");
+            notesInput.setText("");
+            selectedCategory = "";
+            categoryButton.setText("Choose Category");
         });
     }
 

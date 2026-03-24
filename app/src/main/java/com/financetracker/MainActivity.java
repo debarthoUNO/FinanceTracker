@@ -31,8 +31,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        viewEntriesButton.setOnClickListener(v ->
-                Toast.makeText(MainActivity.this, "View Entries clicked", Toast.LENGTH_SHORT).show()
-        );
+        viewEntriesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ViewEntriesActivity.class);
+            startActivity(intent);
+        });
     }
 }
