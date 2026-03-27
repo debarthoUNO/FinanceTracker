@@ -12,6 +12,12 @@ public interface ExpenseDao {
     @Insert
     void insert(Expense expense);
 
-    @Query("SELECT * FROM Expense")
+    @Query("SELECT * FROM Expense ORDER By id DESC")
     List<Expense> getAllExpenses();
+
+    @Query("DELETE FROM Expense")
+    void deleteAllExpenses();
+
+    @Query("SELECT SUM(amount) FROM Expense")
+    Double getTotalExpenses();
 }
